@@ -2,10 +2,10 @@
 
 import urllib.parse
 from git import Repo
-import sys
+import os
 
-git_repo=sys.argv[1]
-git_token=sys.argv[2]
+GIT_REPO=os.environ['GIT_REPO']
+GIT_TOKEN=os.environ['GIT_TOKEN']
 
 def clone_git_repo(git_url,git_token):
     local_path_of_git_repo = r'temprepo'
