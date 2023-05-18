@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
-
 import urllib.parse
 from git import Repo
 import os
+os.environ["GIT_PYTHON_REFRESH"] = "quiet"
 
 GIT_REPO=os.environ['GIT_REPO']
 GIT_TOKEN=os.environ['GIT_TOKEN']
@@ -17,7 +16,7 @@ def clone_git_repo(git_url,git_token):
     print("clone done!!!")
     
 def main():
-    clone_git_repo(git_repo,git_token)
+    clone_git_repo(GIT_REPO,GIT_TOKEN)
     
 if __name__ == '__main__':
     main()
