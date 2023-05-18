@@ -1,3 +1,4 @@
+
 import urllib.parse
 from git import Repo
 import os
@@ -13,6 +14,10 @@ def clone_git_repo(git_url,git_token):
         
     modified_git_url = git_url.replace(hostname, f'{git_token}@{hostname}')
     Repo.clone_from(modified_git_url, local_path_of_git_repo)
+    path=os.getcwd()
+    print("path: ",path)
+    dir_list = os.listdir(path)
+    print("directory list",dir_list)
     print("clone done!!!")
     
 def main():

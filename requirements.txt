@@ -1,2 +1,1 @@
-GitPython==3.1.31
-Git==2.39.2
+gitpython
