@@ -1,13 +1,14 @@
-# syntax=docker/dockerfile:1
-FROM ubuntu:latest
+FROM python:3.9-bullseye
 RUN mkdir /app
 ADD . /app
 WORKDIR /app
 RUN apt-get -y update && apt-get -y upgrade
-RUN apt-get -y install git
-# RUN apt-get -y install python3-dev
-RUN apt-get -y install python3-pip
+RUN apt-get install git
+RUN apt-get -y install python3-dev
+# RUN apk -y add python3-pip
 RUN git --version
-# RUN apt-get -y install librdkafka-dev
+RUN python --version
+RUN apt-get -y install librdkafka-dev
+COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
-CMD ["python", "app.py"]
+CMD ["python3", "app.py"]
