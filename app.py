@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from github import Github
 import os
+import re
 import urllib.parse
 from confluent_kafka import Producer
 
@@ -28,9 +29,13 @@ def get_git_repo(git_url,git_token):
    
     parsed_url = urllib.parse.urlparse(git_url)
     hostname=parsed_url.netloc
-    folder_path = "synthetics/ping"
+    regex_comp=re.compile(r"\/tree\/(master|main)\/")
+    mo = regex_comp.search(git_url)
+    #seperating the git url and the folder path
+    folder_path=git_url.split(mo.group())[1]
+    updated_git_url=git_url.split(mo.group())[0]
     g = Github(base_url=f'https://{hostname}/api/v3', login_or_token=git_token)
-    gitRepo=git_url.split(hostname+'/')[1]
+    gitRepo=updated_git_url.split(hostname+'/')[1]
     repo = g.get_repo(gitRepo)
 
     contents = repo.get_contents(folder_path)
@@ -41,7 +46,6 @@ def get_git_repo(git_url,git_token):
             file_content = content_file.decoded_content.decode("utf-8")
             print(f"Content of '{content_file.path}':")
             print(file_content)
-            # print("=" * 50)
             p.produce('test-topic', file_content, callback=delivery_report)
             p.flush()
     
