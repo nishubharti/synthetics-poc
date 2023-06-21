@@ -10,6 +10,7 @@ GIT_REPO=os.environ['GIT_REPO']
 GIT_TOKEN=os.environ['GIT_TOKEN']
 SASL_PASSWORD=os.environ['SASL_PASSWORD']
 BOOTSTRAP_SERVER=os.environ['BOOTSTRAP_SERVER']
+print("type here",type(os.environ['PATHS']))
 PATHS=json.loads(os.environ['PATHS'])
 
 p = Producer({'bootstrap.servers': BOOTSTRAP_SERVER,

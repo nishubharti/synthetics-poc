@@ -33,7 +33,11 @@ data = json.load(f)
 for i in data:
     sch=i
     Github=data[i]['Github']
-    paths=data[i]['paths']
+    paths=[]
+    for ele in data[i]['paths']:
+        paths.append(ele.replace(" ", ""))
+        
+    print("***path here is***",paths)
     
     if 'm' in sch:
         interval=sch.split('m')[0]
