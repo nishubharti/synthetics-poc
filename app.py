@@ -10,8 +10,7 @@ GIT_REPO=os.environ['GIT_REPO']
 GIT_TOKEN=os.environ['GIT_TOKEN']
 SASL_PASSWORD=os.environ['SASL_PASSWORD']
 BOOTSTRAP_SERVER=os.environ['BOOTSTRAP_SERVER']
-print("type here",type(os.environ['PATHS']))
-PATHS=json.loads(os.environ['PATHS'])
+PATHS=os.environ['PATHS']
 
 p = Producer({'bootstrap.servers': BOOTSTRAP_SERVER,
               'sasl.username': 'token',
@@ -37,20 +36,21 @@ def get_git_repo(git_url,git_token,paths):
     repo = g.get_repo(gitRepo)
         
     payloads=[]
-    for file in paths:
+    file_paths=paths.split(',')
+    for file in file_paths:
         folder_path=file
         contents = repo.get_contents(folder_path)
         if contents.type == "file":
             p.poll(0)
-            file_content = contents.decoded_content.decode("utf-8")
+            data = json.loads(contents.decoded_content.decode('utf8').replace("'", '"'))
             msg_struct={
                 "id": contents.name,
                 "label": "initiated",
-                "payload": file_content
+                "payload": data,
             }
             payloads.append(msg_struct)
             
-    print("msg structure here is",msg_struct)
+    print("msg structure here is",json.dumps(payloads))
     # p.produce('test-topic', str(msg_struct), callback=delivery_report)
     # p.flush()
     
