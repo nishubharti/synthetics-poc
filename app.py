@@ -38,21 +38,27 @@ def get_git_repo(git_url,git_token,paths):
     payloads=[]
     file_paths=paths.split(',')
     for file in file_paths:
-        folder_path=file
-        contents = repo.get_contents(folder_path)
+        contents = repo.get_contents(file)
         if contents.type == "file":
             p.poll(0)
             data = json.loads(contents.decoded_content.decode('utf8').replace("'", '"'))
+            #In progress
+            if 'api' in file:
+                json_name=contents.name.replace('.json','.js')
+                json_file=file.replace(contents.name,json_name)
+                contents = repo.get_contents(json_file)
+                data['script']=contents.decoded_content.decode('utf8')
+            
             msg_struct={
                 "id": contents.name,
                 "label": "initiated",
                 "payload": data,
             }
             payloads.append(msg_struct)
-            
-    print("msg structure here is",json.dumps(payloads))
-    # p.produce('test-topic', str(msg_struct), callback=delivery_report)
-    # p.flush()
+        
+    event_pay=json.dumps(payloads)    
+    p.produce('test-topic', event_pay, callback=delivery_report)
+    p.flush()
     
 def main():
     get_git_repo(GIT_REPO,GIT_TOKEN,PATHS)
