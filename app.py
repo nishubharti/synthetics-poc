@@ -56,7 +56,9 @@ def get_git_repo(git_url,git_token,paths):
             }
             payloads.append(msg_struct)
         
-    event_pay=json.dumps(payloads)    
+    event_pay=json.dumps(payloads) 
+    print("**event pay value here is**")  
+    print(event_pay) 
     p.produce('test-topic', event_pay, callback=delivery_report)
     p.flush()
     
