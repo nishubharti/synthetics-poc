@@ -1,50 +1,59 @@
+#!/usr/bin/env python3
+
 import os
 import json
-from collections import defaultdict
+import tempfile
+from git import Repo
 
-def find_repeat(data):
-    repeat = data.get("repeat")
-    if repeat:
-        return repeat
-    else:
-        for value in data.values():
-            if isinstance(value, dict):
-                repeat = find_repeat(value)
+def find_repeat_value(data):
+    repeat = None
+
+    if isinstance(data, dict):
+        if "repeat" in data:
+            repeat = data["repeat"]
+        else:
+            for value in data.values():
+                repeat = find_repeat_value(value)
                 if repeat:
-                    return repeat
-    return None
+                    break
+    elif isinstance(data, list):
+        for item in data:
+            repeat = find_repeat_value(item)
+            if repeat:
+                break
 
-def create_config(folder_path):
-    config = []
-    entries_by_repeat = defaultdict(list) 
-    for filename in os.listdir(folder_path):
-        file_path = os.path.join(folder_path, filename)
+    return repeat
 
-        if filename.endswith(".json") and os.path.isfile(file_path):
-            with open(file_path, "r") as file:
-                data = json.load(file)         
-                repeat = find_repeat(data)
-                path = file_path
+def get_relative_path(file_path, base_dir):
+    return os.path.relpath(file_path, base_dir)
 
-               
-                if not repeat:
-                    continue
+def create_config(github_url):
+    config = {}
 
+    with tempfile.TemporaryDirectory() as temp_dir:
+        repo = Repo.clone_from(github_url, temp_dir)
 
-                entries_by_repeat[repeat].append(path)
+        for root, dirs, files in os.walk(temp_dir):
+            for filename in files:
+                if filename.endswith(".json"):
+                    file_path = os.path.join(root, filename)
+                    with open(file_path, "r") as file:
+                        data = json.load(file)
+                        repeat = find_repeat_value(data)
 
-    for repeat, paths in entries_by_repeat.items():
-        config_entry = {
-            "repeat": repeat,
-            "paths": paths
-        }
-        print("**type of config_entry here is**",type(config_entry))
-        config.append(config_entry)
+                        if repeat:
+                            if repeat not in config:
+                                config[repeat] = {
+                                    "Github": github_url,
+                                    "paths": []
+                                }
+                            relative_path = get_relative_path(file_path, temp_dir)
+                            config[repeat]["paths"].append(relative_path)
 
     with open("config.json", "w") as file:
         json.dump(config, file, indent=4)
 
     print("config.json created successfully!")
 
-folder_path = "/Users/nishubharti/go/src/github.ibm.com/Nishu-Bharti1/Sc123/test-groups/ping"
-create_config(folder_path)
+github_url = "https://github.ibm.com/Nishu-Bharti1/Sc123"
+create_config(github_url)

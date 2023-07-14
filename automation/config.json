@@ -1,0 +1,34 @@
+{
+    "15m": {
+        "Github": "https://github.ibm.com/Nishu-Bharti1/Sc123",
+        "paths": [
+            "test-groups/ui/synlab.json"
+        ]
+    },
+    "2m": {
+        "Github": "https://github.ibm.com/Nishu-Bharti1/Sc123",
+        "paths": [
+            "test-groups/ping/synlab.json",
+            "test-groups/ping/synlab_v2.json"
+        ]
+    },
+    "5m": {
+        "Github": "https://github.ibm.com/Nishu-Bharti1/Sc123",
+        "paths": [
+            "test-groups/ping/iam_v2.json",
+            "test-groups/api/synlab.json"
+        ]
+    },
+    "10m": {
+        "Github": "https://github.ibm.com/Nishu-Bharti1/Sc123",
+        "paths": [
+            "test-groups/ping/ibm-cloud.json"
+        ]
+    },
+    "1d": {
+        "Github": "https://github.ibm.com/Nishu-Bharti1/Sc123",
+        "paths": [
+            "test-groups/api/sslCheck.json"
+        ]
+    }
+}
